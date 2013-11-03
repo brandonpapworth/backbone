@@ -7,7 +7,7 @@
 //     http://backbonejs.org
 
 ;(function(root){
-
+  'use strict';
   // Initial Setup
   // -------------
 
