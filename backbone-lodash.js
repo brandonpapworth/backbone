@@ -1580,6 +1580,6 @@
       };
     };
 
+    return Backbone;
   }
-
 })(this);
