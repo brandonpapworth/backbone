@@ -9,7 +9,7 @@
 ;(function(root){
   'use strict';
 
-  function backboneFactory () {
+  function backboneFactory ($, _) {
     // Initial Setup
     // -------------
 
