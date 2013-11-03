@@ -1,11 +1,25 @@
 {
-  "name"          : "backbone",
-  "description"   : "Give your JS App some Backbone with Models, Views, Collections, and Events.",
-  "url"           : "http://backbonejs.org",
-  "keywords"      : ["model", "view", "controller", "router", "server", "client", "browser"],
-  "author"        : "Jeremy Ashkenas <jeremy@documentcloud.org>",
-  "dependencies"  : {
-    "underscore"  : ">=1.4.3"
+  "name": "backbone-lodash",
+  "description": "Give your JS App some Backbone with Models, Views, Collections, and Events. Adding in some Lo-Dash love.",
+  "url": "http://backbonejs.org",
+  "keywords": [
+    "model",
+    "view",
+    "controller",
+    "router",
+    "server",
+    "client",
+    "browser"
+  ],
+  "author": "Jeremy Ashkenas <jeremy@documentcloud.org>",
+  "contributors": [
+    {
+      "name": "Brandon Papworth",
+      "email": "brandon@papworth.me"
+    }
+  ],
+  "dependencies": {
+    "lodash": "~2.2.1"
   },
   "devDependencies": {
     "phantomjs": "1.9.0-1",
@@ -14,15 +28,15 @@
   },
   "scripts": {
     "test": "phantomjs test/vendor/runner.js test/index.html?noglobals=true && coffee test/model.coffee",
-    "build": "uglifyjs backbone.js --mangle --source-map backbone-min.map -o backbone-min.js",
-    "doc": "docco backbone.js && docco examples/todos/todos.js examples/backbone.localstorage.js",
-    "lint": "jsl -nofilelisting -nologo -conf docs/jsl.conf -process backbone.js"
+    "build": "uglifyjs backbone-lodash.js --mangle --source-map backbone-lodash.min.map -o backbone-lodash.min.js",
+    "doc": "docco backbone-lodash.js && docco examples/todos/todos.js examples/backbone.localstorage.js",
+    "lint": "jsl -nofilelisting -nologo -conf docs/jsl.conf -process backbone-lodash.js"
   },
-  "main"          : "backbone.js",
-  "version"       : "1.1.0",
-  "license"       : "MIT",
+  "main": "backbone-lodash.js",
+  "version": "1.1.0",
+  "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jashkenas/backbone.git"
+    "url": "https://github.com/brandonpapworth/backbone-lodash.git"
   }
 }
