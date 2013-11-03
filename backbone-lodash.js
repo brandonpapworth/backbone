@@ -6,14 +6,14 @@
 //     For all details and documentation:
 //     http://backbonejs.org
 
-(function(){
+;(function(root){
 
   // Initial Setup
   // -------------
 
   // Save a reference to the global object (`window` in the browser, `exports`
   // on the server).
-  var root = this;
+
 
   // Save the previous value of the `Backbone` variable, so that it can be
   // restored later on, if `noConflict` is used.
@@ -1578,4 +1578,4 @@
     };
   };
 
-}).call(this);
+})(this);
