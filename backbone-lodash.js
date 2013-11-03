@@ -6,9 +6,8 @@
 //     For all details and documentation:
 //     http://backbonejs.org
 
-;(function(root){
+;(function(root, window, document){
   'use strict';
-
   function backboneFactory ($, _) {
     // Initial Setup
     // -------------
@@ -19,8 +18,7 @@
 
     // Save the previous value of the `Backbone` variable, so that it can be
     // restored later on, if `noConflict` is used.
-    var previousBackbone = root.Backbone;
-
+    var previousBackbone = window ? window.Backbone : null;
     // Create local references to array methods we'll want to use later.
     var array = [];
     var push = array.push;
@@ -29,23 +27,14 @@
 
     // The top-level namespace. All public Backbone classes and modules will
     // be attached to this. Exported for both the browser and the server.
-    var Backbone;
-    if (typeof exports !== 'undefined') {
-      Backbone = exports;
-    } else {
-      Backbone = root.Backbone = {};
-    }
+    var Backbone = {};
 
     // Current version of the library. Keep in sync with `package.json`.
     Backbone.VERSION = '1.1.0';
 
-    // Require Underscore, if we're on the server, and it's not already present.
-    var _ = root._;
-    if (!_ && (typeof require !== 'undefined')) _ = require('lodash');
-
     // For Backbone's purposes, jQuery, Zepto, Ender, or My Library (kidding) owns
     // the `$` variable.
-    Backbone.$ = root.jQuery || root.Zepto || root.ender || root.$;
+    Backbone.$ = $;
 
     // Runs Backbone.js in *noConflict* mode, returning the `Backbone` variable
     // to its previous owner. Returns a reference to this Backbone object.
@@ -1582,4 +1571,17 @@
 
     return Backbone;
   }
-})(this);
+
+  if (root && typeof root.define === 'function' && root.define.amd) {
+    var define = root.define;
+    define('backbone',['jquery','lodash'],backboneFactory);
+  } else if (root.module && typeof root.module === 'object' && root.module.exports && typeof root.module.exports === 'object') {
+    root.module.exports = backboneFactory(root.jQuery || root.Zepto || root.ender || root.$, root.require('lodash'));
+  } else if (window) {
+    window.Backbone = backboneFactory(window.jQuery || window.Zepto || window.ender || window.$, window._);
+  } else if (root) {
+    window.root = backboneFactory(root.jQuery || root.Zepto || root.ender || root.$, root._);
+  } else {
+    return backboneFactory($, _);
+  }
+})(this, window, document);
