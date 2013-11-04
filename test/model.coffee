@@ -2,7 +2,7 @@
 # works correctly.
 
 {ok, equal, deepEqual}      = require 'assert'
-{Model, Collection, Events} = require '../backbone'
+Backbone = require '../backbone-lodash'
 
 
 # Patch `ok` to store a count of passed tests...
@@ -13,7 +13,7 @@ ok = ->
   count++
 
 
-class Document extends Model
+class Document extends Backbone.Model
 
   fullName: ->
     @get('name') + ' ' + @get('surname')
