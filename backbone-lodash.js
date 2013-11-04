@@ -7,16 +7,7 @@
 //     http://backbonejs.org
 
 ;(function (factory) {
-  //console.log('args:',arguments);
   factory = factory(this, this && this.document ? document : null);
-  var objectTypes = {
-    'boolean': false,
-    'function': true,
-    'object': true,
-    'number': false,
-    'string': false,
-    'undefined': false
-  };
   var root          = typeof window === 'object' && window || this,
       freeExports   = typeof exports === 'object' && exports && !exports.nodeType && exports,
       freeModule    = typeof module === 'object' && module && !module.nodeType && module,
