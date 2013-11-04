@@ -6,32 +6,74 @@
 //     For all details and documentation:
 //     http://backbonejs.org
 
-;(function(root, window, document){
+;(function (factory) {
+  //console.log('args:',arguments);
+  factory = factory(this, this && this.document ? document : null);
+  var objectTypes = {
+    'boolean': false,
+    'function': true,
+    'object': true,
+    'number': false,
+    'string': false,
+    'undefined': false
+  };
+  var root          = typeof window === 'object' && window || this,
+      freeExports   = typeof exports === 'object' && exports && !exports.nodeType && exports,
+      freeModule    = typeof module === 'object' && module && !module.nodeType && module,
+      moduleExports = freeModule && freeModule.exports === freeExports && freeExports,
+      freeGlobal    = typeof global === 'object' && global;
+
+  if (freeGlobal && (freeGlobal.global === freeGlobal || freeGlobal.window === freeGlobal)) {
+    root = freeGlobal;
+  }
+
+  if (typeof define === 'function' && typeof define.amd === 'object' && define.amd) {
+    define('backbone',['jquery','lodash'],factory);
+  }
+  else if (freeExports && freeModule) {
+    var r = require;
+    if (moduleExports) {
+      freeModule.exports = factory.call(root, null, r('lodash'));
+      freeModule.exports.Backbone = freeModule.exports;
+    }
+    else {
+      freeExports.Backbone = factory.call(root, null, r('lodash'));
+    }
+  }
+  else {
+    root.Backbone = factory.call(root);
+  }
+})(function (window, document) {
   'use strict';
-  function backboneFactory ($, _) {
+
+  return function($,_){
+    'use strict';
     // Initial Setup
     // -------------
-
-    // Save a reference to the global object (`window` in the browser, `exports`
-    // on the server).
-
-
+    var root = this || window;
     // Save the previous value of the `Backbone` variable, so that it can be
     // restored later on, if `noConflict` is used.
-    var previousBackbone = window ? window.Backbone : null;
+    var previousBackbone = root.Backbone;
+
     // Create local references to array methods we'll want to use later.
     var array = [];
     var push = array.push;
     var slice = array.slice;
     var splice = array.splice;
-
     // The top-level namespace. All public Backbone classes and modules will
     // be attached to this. Exported for both the browser and the server.
-    var Backbone = {};
+    var Backbone;
+    if (typeof exports !== 'undefined') {
+      Backbone = exports;
+    } else {
+      Backbone = root.Backbone = {};
+    }
 
     // Current version of the library. Keep in sync with `package.json`.
     Backbone.VERSION = '1.1.0';
 
+    _ || (_ = root._);
+    $ || ($ = root.jQuery || root.Zepto || root.ender || root.$);
     // For Backbone's purposes, jQuery, Zepto, Ender, or My Library (kidding) owns
     // the `$` variable.
     Backbone.$ = $;
@@ -1080,27 +1122,27 @@
       // an element from the `id`, `className` and `tagName` properties.
       _ensureElement: document
         ? function () {
-          if (!this.el) {
-            var attrs = _.extend({}, _.result(this, 'attributes'));
-            if (this.id) attrs.id = _.result(this, 'id');
-            if (this.className) attrs['class'] = _.result(this, 'className');
-            var $el = Backbone.$(document.createElement(typeof this.tagName === 'function' ? this.tagName() : this.tagName)).attr(attrs);
-            this.setElement($el, false);
-          } else {
-            this.setElement(_.result(this, 'el'), false);
+            if (!this.el) {
+              var attrs = _.extend({}, typeof this.attributes === 'function' ? this.attributes() : this.attributes);
+              if (this.id) attrs.id = typeof this.id === 'function' ? this.id() : this.id;
+              if (this.className) attrs['class'] = typeof this.id === 'function' ? this.className() : this.className;
+              var $el = Backbone.$(document.createElement(typeof this.tagName === 'function' ? this.tagName() : this.tagName)).attr(attrs);
+              this.setElement($el, false);
+            } else {
+              this.setElement(typeof this.el === 'function' ? this.el() : this.el, false);
+            }
           }
-        }
-        : function() {
-          if (!this.el) {
-            var attrs = _.extend({}, _.result(this, 'attributes'));
-            if (this.id) attrs.id = _.result(this, 'id');
-            if (this.className) attrs['class'] = _.result(this, 'className');
-            var $el = Backbone.$('<' + _.result(this, 'tagName') + '>').attr(attrs);
-            this.setElement($el, false);
-          } else {
-            this.setElement(_.result(this, 'el'), false);
+        : function () {
+            if (!this.el) {
+              var attrs = _.extend({}, _.result(this, 'attributes'));
+              if (this.id) attrs.id = _.result(this, 'id');
+              if (this.className) attrs['class'] = _.result(this, 'className');
+              var $el = Backbone.$('<' + _.result(this, 'tagName') + '>').attr(attrs);
+              this.setElement($el, false);
+            } else {
+              this.setElement(_.result(this, 'el'), false);
+            }
           }
-        }
 
     });
 
@@ -1582,18 +1624,6 @@
     };
 
     return Backbone;
-  }
 
-  if (root && typeof root.define === 'function' && root.define.amd) {
-    var define = root.define;
-    define('backbone',['jquery','lodash'],backboneFactory);
-  } else if (root.module && typeof root.module === 'object' && root.module.exports && typeof root.module.exports === 'object') {
-    root.module.exports = backboneFactory(root.jQuery || root.Zepto || root.ender || root.$, root.require('lodash'));
-  } else if (window) {
-    window.Backbone = backboneFactory(window.jQuery || window.Zepto || window.ender || window.$, window._);
-  } else if (root) {
-    window.root = backboneFactory(root.jQuery || root.Zepto || root.ender || root.$, root._);
-  } else {
-    return backboneFactory($, _);
-  }
-})(this, window, document);
+  };
+});
